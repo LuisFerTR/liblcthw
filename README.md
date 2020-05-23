@@ -5,4 +5,6 @@
 Una pequeña librería de estructuras de datos con pruebas 
 para cada estructura agregada.
 
+Basada en los ejercicios del libro de Zed Shaw.
+
 * Lista enlazada doble
