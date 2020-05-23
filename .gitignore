@@ -1,0 +1,11 @@
+# Visual Studio Code Workspace
+*.code-workspace
+
+# VS Code Config
+.vscode
+
+# C executables
+*.out
+
+# Archivos para compilación
+makefile
