@@ -9,4 +9,6 @@ int List_bubble_sort(List *list, List_compare cmp);
 
 List *List_merge_sort(List *list, List_compare cmp);
 
+void List_insert_sorted(List *list, void *value, List_compare cmp);
+
 #endif

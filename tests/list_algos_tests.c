@@ -72,11 +72,26 @@ char *test_merge_sort() {
     return NULL;
 }
 
+char *test_insert_sorted() {
+    List *words = List_create();
+
+    for (int i = 0; i < NUM_VALUES; i++) {
+        List_insert_sorted(words, values[i], (List_compare) strcmp);
+    }
+
+    mu_assert(is_sorted(words), "Words elements were not insert sorted.");
+
+    List_destroy(words);
+
+    return NULL;
+}
+
 char *all_tests() {
     mu_suite_start();
 
     mu_run_test(test_bubble_sort);
     mu_run_test(test_merge_sort);
+    mu_run_test(test_insert_sorted);
 
     return NULL;
 }

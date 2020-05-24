@@ -20,6 +20,9 @@ void List_swap_nodes(ListNode *first, ListNode *second) {
 }
 
 int List_bubble_sort(List *list, List_compare cmp) {
+    check(list != NULL, "List can't be NULL");
+    check(cmp != NULL, "Compare function can't be NULL.");
+
     bool sorted = false;
 	while (!sorted) {
         sorted = true;
@@ -35,9 +38,14 @@ int List_bubble_sort(List *list, List_compare cmp) {
 	}
 
 	return 0;
+
+error:
+    return 1;
 }
 
 List *List_merge_sort(List *list, List_compare cmp) {
+    check(cmp != NULL, "Compare function can't be NULL.");
+
     if (List_count(list) <= 1) return list;
 
     List *first = List_create();
@@ -84,4 +92,42 @@ List *List_merge_sort(List *list, List_compare cmp) {
     List_destroy(second);
 
 	return result;
+
+error:
+    return NULL;
+}
+
+void List_insert_sorted(List * list, void *value, List_compare cmp) {
+    ListNode *node = calloc(1, sizeof(ListNode));
+    check_mem(node);
+
+    node->value = value;
+    node->prev = NULL;
+    node->next = NULL;
+    
+    if (list->first == NULL) {
+        list->first = node;
+        list->last = node;       
+    } else if (cmp(list->first->value, value) >= 0) {
+        node->next = list->first;
+        node->next->prev = node;
+        list->first = node;
+    } else {
+        ListNode *current = list->first;
+        while (current->next != NULL && cmp(current->next->value, value) < 0){
+            current = current->next;
+        }
+        
+        node->next = current->next;
+        
+        if (current->next != NULL) node->next->prev = node;
+
+        current->next = node;
+        node->prev = current;
+    }
+
+    list->count++;
+
+error:
+    return;
 }
