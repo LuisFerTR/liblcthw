@@ -1,14 +1,15 @@
 #include <lcthw/list.h>
 #include <lcthw/dbg.h>
+#include <assert.h>
 
 List *List_create() {
     return calloc(1, sizeof(List));
 }
 
 void List_destroy(List * list) {
-    LIST_FOREACH(list, first, next, cur) {
-        if (cur->prev) {
-            free(cur->prev);
+    LIST_FOREACH(node, list) {
+        if (node->prev) {
+            free(node->prev);
         }
     }
 
@@ -17,14 +18,34 @@ void List_destroy(List * list) {
 }
 
 void List_clear(List * list) {
-    LIST_FOREACH(list, first, next, cur) {
-        free(cur->value);
+    LIST_FOREACH(node, list) {
+        free(node->value);
     }
 }
 
 void List_clear_destroy(List * list) {
     List_clear(list);
     List_destroy(list);
+}
+
+int List_count(List *list) {
+    if (!list) return 0;
+
+    return list->count;
+}
+
+void *List_first(List *list) {
+    if (!list || !list->first) return NULL;
+    assert(list->first->value != NULL);
+    
+    return list->first->value;
+}
+
+void *List_last(List *list) {
+    if (!list || !list->last) return NULL;
+    assert(list->last->value != NULL);
+    
+    return list->last->value;    
 }
 
 void List_push(List * list, void *value) {
