@@ -8,3 +8,4 @@ para cada estructura agregada.
 Basada en los ejercicios del libro de Zed Shaw.
 
 * Lista enlazada doble
+* Algoritmos para listas enlazadas dobles
