@@ -11,3 +11,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Algoritmos para listas enlazadas dobles
 * Arreglo dinámico
 * Métodos de búsqueda y ordenamiento
+* String más seguros
