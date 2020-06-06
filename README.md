@@ -14,3 +14,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Strings más seguros
 * Hashmap
 * Funciones Hash
+* Algoritmo Boyer-Moore-Horsepool
