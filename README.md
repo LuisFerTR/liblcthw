@@ -15,3 +15,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Hashmap
 * Funciones Hash
 * Algoritmo Boyer-Moore-Horsepool
+* Árbol de búsqueda binaria
