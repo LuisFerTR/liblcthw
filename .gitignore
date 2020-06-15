@@ -9,3 +9,7 @@
 
 # Código objeto
 *.o
+
+# Librerías
+*.a
+*.so
