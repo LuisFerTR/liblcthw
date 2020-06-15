@@ -7,5 +7,5 @@
 # C executables
 *.out
 
-# Archivos para compilación
-makefile
+# Código objeto
+*.o
