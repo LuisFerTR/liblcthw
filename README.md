@@ -16,3 +16,6 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Funciones Hash
 * Algoritmo Boyer-Moore-Horsepool
 * Árbol de búsqueda binaria
+* Stack
+* Queue
+* Motor de estadística
