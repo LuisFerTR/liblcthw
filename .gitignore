@@ -13,3 +13,6 @@
 # Librerías
 *.a
 *.so
+
+# Logs
+*.log
