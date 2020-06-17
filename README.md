@@ -19,3 +19,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Stack
 * Queue
 * Motor de estadística
+* Buffer circular
