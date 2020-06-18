@@ -20,3 +20,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Queue
 * Motor de estadística
 * Buffer circular
+* Client de red (?)
