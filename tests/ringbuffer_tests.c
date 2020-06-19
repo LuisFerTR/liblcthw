@@ -1,155 +1,13 @@
 #include "minunit.h"
 #include <lcthw/ringbuffer.h>
 
-#define BUFFER_SIZE 5
-
-RingBuffer *buffer = NULL;
+static RingBuffer *buffer = NULL;
+char data[100] = { '\0' };
 
 char *test_create()
 {
-    buffer = RingBuffer_create(BUFFER_SIZE);
-    mu_assert(buffer != NULL, "Failed to create Ring buffer");
-
-    return NULL;
-}
-
-char *test_read_write()
-{
-    int rc = 0;
-    char target[50];
-    for (int i = 0; i < 50; i++)
-    {
-        target[i] = 1;
-    }
-
-    RingBuffer *invalidBuffer = RingBuffer_create(0);
-    mu_assert(invalidBuffer == NULL, "RingBuffer_create created buffer with length 0");
-
-    rc = RingBuffer_read(NULL, target, 5);
-    mu_assert(rc != 0, "RingBuffer_read succeeded when ringbuffer is null");
-
-    rc = RingBuffer_write(NULL, "1234", 5);
-    mu_assert(rc != 0, "RingBuffer_write succeeded when ringbuffer is null");
-
-    rc = RingBuffer_peek(NULL, target, 5);
-    mu_assert(rc != 0, "RingBuffer_peek succeeded when ringbuffer is null");
-
-    mu_assert(RingBuffer_empty(NULL) == false, "RingBuffer_empty returned true with NULL");
-    mu_assert(RingBuffer_full(NULL) == false, "RingBuffer_full returned true with NULL");
-    mu_assert(
-        RingBuffer_available_data(NULL) == 0, "RingBuffer_available_data succeeded when input is NULL");
-    mu_assert(
-        RingBuffer_available_space(NULL) == 0, "RingBuffer_available_space succeeded when input is NULL");
-
-    mu_assert(RingBuffer_empty(buffer) == true, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == false, "RingBuffer_full wrong return value");
-
-    rc = RingBuffer_peek(buffer, "1", 1);
-    mu_assert(rc != 0, "RingBuffer_peek expected to return error code, but was successful");
-
-    rc = RingBuffer_read(buffer, "1", 1);
-    mu_assert(rc != 0, "RingBuffer_read expected to return error code, but was successful");
-
-    rc = RingBuffer_write(buffer, "", 0);
-    mu_assert(rc != 0, "RingBuffer_write succeeded with length 0");
-
-    rc = RingBuffer_write(buffer, "1234", 4);
-    mu_assert(rc == 0, "RingBuffer_write bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 4, "wrong available data after Ringbuffer_write");
-    mu_assert(RingBuffer_available_space(buffer) == 1, "wrong available space after RingBuffer_write");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-
-    rc = RingBuffer_peek(buffer, target, 4);
-    mu_assert(rc == 0, "Ringbuffer_peek bad exit status");
-    mu_assert(strcmp(target, "1234") == 0, "Bad data after peek");
-
-    rc = RingBuffer_peek(buffer, NULL, 4);
-    mu_assert(rc != 0, "RingBuffer_peek succeeded when target is null");
-
-    rc = RingBuffer_read(buffer, NULL, 4);
-    mu_assert(rc != 0, "RingBuffer_read succeeded when target is null");
-
-    rc = RingBuffer_read(buffer, "", 0);
-    mu_assert(rc != 0, "RingBuffer_read succeeded when amount is 0");
-
-    rc = RingBuffer_peek(buffer, "", 0);
-    mu_assert(rc != 0, "RingBuffer_peek succeeded when amount is 0");
-
-    rc = RingBuffer_write(buffer, NULL, 4);
-    mu_assert(rc != 0, "RingBuffer_write succeeded when data is NULL");
-
-    rc = RingBuffer_write(buffer, "5", 1);
-    mu_assert(rc == 0, "RingBuffer_write bad exit status");
-
-    mu_assert(RingBuffer_available_data(buffer) == 5, "wrong available data after Ringbuffer_write");
-    mu_assert(RingBuffer_available_space(buffer) == 0, "wrong available space after RingBuffer_write");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == true, "RingBuffer_full wrong return value");
-
-    rc = RingBuffer_peek(buffer, target, 5);
-    mu_assert(rc == 0, "Ringbuffer_peek bad exit status");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "12345", target);
-    mu_assert(strcmp(target, "12345") == 0, "Bad data after peek");
-
-    rc = RingBuffer_write(buffer, "6", 1);
-    mu_assert(rc == 0, "RingBuffer_write bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 5, "wrong available data after Ringbuffer_write");
-    mu_assert(RingBuffer_available_space(buffer) == 0, "wrong available space after RingBuffer_write");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == true, "RingBuffer_full wrong return value");
-
-    rc = RingBuffer_peek(buffer, target, 5);
-    mu_assert(rc == 0, "Ringbuffer_peek bad exit status");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "23456", target);
-    mu_assert(strcmp(target, "23456") == 0, "Bad data after peek");
-
-    rc = RingBuffer_write(buffer, "789", 3);
-    mu_assert(rc == 0, "RingBuffer_write bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 5, "wrong available data after Ringbuffer_write");
-    mu_assert(RingBuffer_available_space(buffer) == 0, "wrong available space after RingBuffer_write");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == true, "RingBuffer_full wrong return value");
-
-    rc = RingBuffer_peek(buffer, target, 5);
-    mu_assert(rc == 0, "Ringbuffer_peek bad exit status");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "56789", target);
-    mu_assert(strcmp(target, "56789") == 0, "Bad data after peek");
-
-    RingBuffer_read(buffer, target, 2);
-    mu_assert(rc == 0, "RingBuffer_read bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 3, "wrong available data after Ringbuffer_read");
-    mu_assert(RingBuffer_available_space(buffer) == 2, "wrong available space after RingBuffer_read");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == false, "RingBuffer_full wrong return value");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "56", target);
-    mu_assert(strcmp(target, "56") == 0, "Bad data after read");
-
-    rc = RingBuffer_write(buffer, "1", 1);
-    mu_assert(rc == 0, "RingBuffer_write bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 4, "wrong available data after Ringbuffer_write");
-    mu_assert(RingBuffer_available_space(buffer) == 1, "wrong available space after RingBuffer_write");
-    mu_assert(RingBuffer_empty(buffer) == false, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == false, "RingBuffer_full wrong return value");
-
-    rc = RingBuffer_peek(buffer, target, 4);
-    mu_assert(rc == 0, "Ringbuffer_peek bad exit status");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "7891", target);
-    mu_assert(strcmp(target, "7891") == 0, "Bad data after peek");
-
-    RingBuffer_read(buffer, target, 4);
-    mu_assert(rc == 0, "RingBuffer_read bad exit status");
-    mu_assert(RingBuffer_available_data(buffer) == 0, "wrong available data after Ringbuffer_read");
-    mu_assert(RingBuffer_available_space(buffer) == 5, "wrong available space after RingBuffer_read");
-    mu_assert(RingBuffer_empty(buffer) == true, "RingBuffer_empty wrong return value");
-    mu_assert(RingBuffer_full(buffer) == false, "RingBuffer_full wrong return value");
-
-    log_info("ASSERT Expected: %s, Actual: %s", "7891", target);
-    mu_assert(strcmp(target, "7891") == 0, "Bad data after read");
+    buffer = RingBuffer_create(100);
+    mu_assert(buffer != NULL, "Failed to make ringbuffer.");
 
     return NULL;
 }
@@ -157,6 +15,69 @@ char *test_read_write()
 char *test_destroy()
 {
     RingBuffer_destroy(buffer);
+
+    return NULL;
+}
+
+char *test_read_write()
+{
+    mu_assert(RingBuffer_empty(buffer), "Should be empty.");
+    mu_assert(!RingBuffer_full(buffer), "Should NOT be full.");
+    debug("data is: %d, space is: %d",
+            RingBuffer_available_data(buffer),
+            RingBuffer_available_space(buffer));
+    mu_assert(RingBuffer_available_data(buffer) == 0,
+            "Should have 0 data.");
+    mu_assert(RingBuffer_available_space(buffer) == 100,
+            "Should have 100 space.");
+
+    int rc = RingBuffer_write(buffer, data, 100);
+    mu_assert(rc == 100, "Failed to write full buffer.");
+    mu_assert(RingBuffer_available_space(buffer) == 0, "Invalid available space.");
+    mu_assert(RingBuffer_available_data(buffer) == 100, "Invalid available data.");
+    mu_assert(RingBuffer_full(buffer), "Buffer should be full.");
+    mu_assert(!RingBuffer_empty(buffer), "Should not be empty.");
+    RingBuffer_clear(buffer);
+
+    rc = RingBuffer_write(buffer, "hello", sizeof("hello"));
+    mu_assert(rc == sizeof("hello"), "Failed to write hello.");
+    mu_assert(RingBuffer_available_data(buffer) == 6,
+            "Should have 6 data.");
+    mu_assert(RingBuffer_available_space(buffer) == 100 - 6,
+            "Should have 100 space.");
+
+    rc = RingBuffer_write(buffer, "Zed", sizeof("Zed"));
+    mu_assert(rc == sizeof("Zed"), "Failed to write Zed.");
+
+    mu_assert(!RingBuffer_empty(buffer), "Should NOT be empty.");
+    mu_assert(!RingBuffer_full(buffer), "Should NOT be full.");
+
+    rc = RingBuffer_read(buffer, data, sizeof("hello"));
+    mu_assert(rc == sizeof("hello"), "Failed to read the hello out.");
+
+    mu_assert(!RingBuffer_empty(buffer), "Should be empty.");
+    mu_assert(!RingBuffer_full(buffer), "Should NOT be full.");
+
+    rc = RingBuffer_read(buffer, data, sizeof("Zed"));
+    mu_assert(rc == sizeof("Zed"), "Failed to read the Zed out.");
+    mu_assert(RingBuffer_empty(buffer), "Should be empty.");
+
+    bstring data = bfromcstr("Hello Again");
+    rc = RingBuffer_puts(buffer, data);
+    bdestroy(data);
+    mu_assert(rc != -1, "Failed to write a bstring.");
+    mu_assert(!RingBuffer_empty(buffer), "Should NOT be empty.");
+
+    data = RingBuffer_gets(buffer, 2);
+    mu_assert(data, "Didn't get any bstring from gets.");
+    mu_assert(bisstemeqblk(data, "He", 2), "Wrong gets result.");
+    bdestroy(data);
+
+    data = RingBuffer_get_all(buffer);
+    mu_assert(data, "Didn't get any bstring from gets.");
+    mu_assert(bisstemeqblk(data, "llo Again", 9),
+            "Wrong get_all result.");
+    bdestroy(data);
 
     return NULL;
 }
