@@ -21,3 +21,4 @@ Basada en los ejercicios del libro de Zed Shaw.
 * Motor de estadística
 * Buffer circular
 * Client de red (?)
+* Árbol ternario
